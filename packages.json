@@ -10,7 +10,7 @@
 			"platforms": {
 				"*": [
 					{
-						"version": "2.0-beta",
+						"version": "2013.06.18.03.00.00",
 						"url": "https://nodeload.github.com/kevinxucs/Sublime-Gitignore/zip/master"
 					}
 				]
