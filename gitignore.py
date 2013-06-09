@@ -4,21 +4,23 @@ import os
 class rungiboCommand(sublime_plugin.WindowCommand):
 
 	_bp_list = []
-	_bp_path = ''
+	_package_path = ''
 
 	def find_path(self):
-		if not self._bp_path:
-			paths = [sublime.packages_path() + '/Gitignore/',
-					sublime.packages_path() + '/Sublime-Gitignore/',
-					sublime.installed_packages_path() + "/Gitignore.sublime-packages/"]
+		if not self._package_path:
+			paths = [os.path.join(sublime.installed_packages_path(), 'Gitignore.sublime-package'),
+					os.path.join(sublime.packages_path(), 'Gitignore'),
+					os.path.join(sublime.packages_path(), 'Sublime-Gitignore')]
 			for path in paths:
+				print("Trying path: " + path);
 				try:
-					os.listdir(path)
-					self._bp_path = path + "boilerplates/"
+					sublime.load_resource(os.path.join(path, 'boilerplates.json'))
+					self._package_path = path
 				except:
 					continue;
 
-		return self._bp_path
+		print("Found path: " + self._package_path)
+		return self._package_path
 
 	def build_list(self):
 		if not self._bp_list:
@@ -61,11 +63,11 @@ class rungiboCommand(sublime_plugin.WindowCommand):
 		final = ''
 
 		for bp in self.chosen_array:
-			bpfile = open(path+bp+'.gitignore', 'r')
+			bpfile = open(path + bp + '.gitignore', 'r')
 			text = bpfile.read()
 			bpfile.close()
 
-			final = final + '###'+bp+'###\n \n'+text+'\n\n'
+			final = final + '###' + bp + '###\n \n' + text + '\n\n'
 
 		view = sublime.active_window().new_file()
 		view.run_command('writegibo', {'bp': final})
