@@ -6,11 +6,11 @@
 			"description": "An easy way to fetch gitignore boilerplates from github",
 			"author": "Adam Lilienfeldt",
 			"homepage": "https://github.com/kevinxucs/Sublime-Gitignore",
-			"last_modified": "2013-06-09 14:36:00",
+			"last_modified": "2013-06-09 14:50:00",
 			"platforms": {
 				"*": [
 					{
-						"version": "2013.06.09.14.36.00",
+						"version": "2013.06.09.14.50.00",
 						"url": "https://nodeload.github.com/kevinxucs/Sublime-Gitignore/zip/master"
 					}
 				]
