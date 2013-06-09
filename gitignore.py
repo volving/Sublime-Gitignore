@@ -1,7 +1,7 @@
 import sublime, sublime_plugin
 import os
 
-class rungiboCommand(sublime_plugin.WindowCommand, sublime.Window):
+class rungiboCommand(sublime_plugin.WindowCommand):
 
 	_bp_list = []
 
@@ -59,7 +59,12 @@ class rungiboCommand(sublime_plugin.WindowCommand, sublime.Window):
 			final = final + '###'+bp+'###\n \n'+text+'\n\n'
 
 		view = sublime.active_window().new_file()
-		edit = view.begin_edit()
-		view.insert(edit, 0, final)
-		view.set_name('.gitignore')
-		view.end_edit(edit)
+		view.run_command('writegibo', {'bp': final})
+
+
+class writegiboCommand(sublime_plugin.TextCommand):
+
+	def run(self, edit, **kwargs):
+		self.view.insert(edit, 0, kwargs['bp'])
+		self.view.set_name('.gitignore')
+		self.view.end_edit(edit)
