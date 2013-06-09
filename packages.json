@@ -1,0 +1,20 @@
+{
+	"schema_version": "1.2",
+	"packages": [
+		{
+			"name": "Gitignore",
+			"description": "An easy way to fetch gitignore boilerplates from github",
+			"author": "Kaiwen Xu",
+			"homepage": "https://github.com/kevinxucs/Sublime-Gitignore",
+			"last_modified": "2013-06-09 3:00:00",
+			"platforms": {
+				"*": [
+					{
+						"version": "2.0-beta",
+						"url": "https://nodeload.github.com/kevinxucs/Sublime-Gitignore/zip/master"
+					}
+				]
+			}
+		}
+	]
+}
