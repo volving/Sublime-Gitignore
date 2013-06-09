@@ -4,13 +4,25 @@ import os
 class rungiboCommand(sublime_plugin.WindowCommand):
 
 	_bp_list = []
+	_bp_path = ''
+
+	def find_path(self):
+		if not self._bp_path:
+			paths = [sublime.packages_path() + '/Gitignore/',
+					sublime.packages_path() + '/Sublime-Gitignore/',
+					sublime.installed_packages_path() + "/Gitignore.sublime-packages/"]
+			for path in paths:
+				try:
+					os.listdir(path)
+					self._bp_path = path + "boilerplates/"
+				except:
+					continue;
+
+		return self._bp_path
 
 	def build_list(self):
 		if not self._bp_list:
-			if os.path.exists(sublime.packages_path()+'/Gitignore'):
-				path = sublime.packages_path()+'/Gitignore/boilerplates/'
-			else:
-				path = sublime.packages_path()+'/Sublime-Gitignore/boilerplates/'
+			path = self.find_path();
 
 			for dir in os.listdir(path):
 				self._bp_list.append(dir.replace('.gitignore', ''))
@@ -44,10 +56,7 @@ class rungiboCommand(sublime_plugin.WindowCommand):
 			self.show_quick_panel(self.second_list, self.second_select)
 
 	def write_file(self):
-		if os.path.exists(sublime.packages_path()+'/Gitignore'):
-			path = sublime.packages_path()+'/Gitignore/boilerplates/'
-		else:
-			path = sublime.packages_path()+'/Sublime-Gitignore/boilerplates/'
+		path = self.find_path();
 
 		final = ''
 
