@@ -6,9 +6,8 @@ import sublime, sublime_plugin
 class rungiboCommand(sublime_plugin.WindowCommand):
 
 	_bp_list = []
-	_bp_folder = 'boilerplates' + os.sep
+	_bp_folder = 'boilerplates'
 	_package_path = ''
-
 
 	def _find_path(self):
 		if not self._package_path:
@@ -22,26 +21,28 @@ class rungiboCommand(sublime_plugin.WindowCommand):
 
 		return self._package_path
 
-	def _listdir(self, path):
+	def _listdir(self):
 		package_path = self._find_path()
 		if zipfile.is_zipfile(package_path):
 			# Dealing with .sublime-package file
 			package = zipfile.ZipFile(package_path, "r")
+			path = self._bp_folder + "/"
 			return [f.replace(path, '') for f in package.namelist() if f.startswith(path)]
 		else:
-			return os.listdir(os.path.join(package_path, path))
+			return os.listdir(os.path.join(package_path, self._bp_folder))
 
-	def _loadfile(self, path):
+	def _loadfile(self, bp):
 		package_path = self._find_path()
 		if zipfile.is_zipfile(package_path):
 			# Dealing with .sublime-package file
 			package = zipfile.ZipFile(package_path, 'r')
+			path = self._bp_folder + "/" + bp
 			f = package.open(path, 'r')
 			text = f.read().decode()
 			f.close()
 			return text
 		else:
-			file_path = os.path.join(package_path, path)
+			file_path = os.path.join(package_path, self._bp_folder, bp)
 			f = open(file_path, 'r')
 			text = f.read().decode()
 			f.close()
@@ -49,7 +50,7 @@ class rungiboCommand(sublime_plugin.WindowCommand):
 
 	def build_list(self):
 		if not self._bp_list:
-			for dir in self._listdir(self._bp_folder):
+			for dir in self._listdir():
 				self._bp_list.append(dir.replace('.gitignore', ''))
 
 		self.chosen_array = []
@@ -84,9 +85,10 @@ class rungiboCommand(sublime_plugin.WindowCommand):
 		final = ''
 
 		for bp in self.chosen_array:
-			text = self._loadfile(os.path.join(self._bp_folder, bp + ".gitignore"))
-			final = final + '###' + bp + '###\n \n' + text + '\n\n'
+			text = self._loadfile(bp + ".gitignore")
+			final = final + '###' + bp + '###\n\n' + text + '\n\n'
 
+		final = final.strip()
 		view = sublime.active_window().new_file()
 		view.run_command('writegibo', {'bp': final})
 
