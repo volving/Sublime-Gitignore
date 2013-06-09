@@ -1,36 +1,59 @@
-import sublime, sublime_plugin
 import os
+import zipfile
+
+import sublime, sublime_plugin
 
 class rungiboCommand(sublime_plugin.WindowCommand):
 
 	_bp_list = []
+	_bp_folder = 'boilerplates' + os.sep
 	_package_path = ''
 
-	def find_path(self):
+
+	def _find_path(self):
 		if not self._package_path:
 			paths = [os.path.join(sublime.installed_packages_path(), 'Gitignore.sublime-package'),
-					os.path.join(sublime.packages_path(), 'Gitignore'),
-					os.path.join(sublime.packages_path(), 'Sublime-Gitignore')]
+					 os.path.join(sublime.packages_path(), 'Gitignore'),
+					 os.path.join(sublime.packages_path(), 'Sublime-Gitignore')]
 			for path in paths:
-				print("Trying path: " + path);
-				try:
-					sublime.load_resource(os.path.join(path, 'boilerplates.json'))
+				if os.path.exists(path):
 					self._package_path = path
-				except:
-					continue;
+					break
 
-		print("Found path: " + self._package_path)
 		return self._package_path
+
+	def _listdir(self, path):
+		package_path = self._find_path()
+		if zipfile.is_zipfile(package_path):
+			# Dealing with .sublime-package file
+			package = zipfile.ZipFile(package_path, "r")
+			return [f.replace(path, '') for f in package.namelist() if f.startswith(path)]
+		else:
+			return os.listdir(os.path.join(package_path, path))
+
+	def _loadfile(self, path):
+		package_path = self._find_path()
+		if zipfile.is_zipfile(package_path):
+			# Dealing with .sublime-package file
+			package = zipfile.ZipFile(package_path, 'r')
+			f = package.open(path, 'r')
+			text = f.read().decode()
+			f.close()
+			return text
+		else:
+			file_path = os.path.join(package_path, path)
+			f = open(file_path, 'r')
+			text = f.read().decode()
+			f.close()
+			return text
 
 	def build_list(self):
 		if not self._bp_list:
-			path = self.find_path();
-
-			for dir in os.listdir(path):
+			for dir in self._listdir(self._bp_folder):
 				self._bp_list.append(dir.replace('.gitignore', ''))
 
 		self.chosen_array = []
-		self.first_list = self._bp_list[:]	# Copy _bp_list
+		self.first_list = self._bp_list[:]  # Copy _bp_list
 		self.second_list = ['Done'] + self._bp_list
 
 	def show_quick_panel(self, options, done):
@@ -58,15 +81,10 @@ class rungiboCommand(sublime_plugin.WindowCommand):
 			self.show_quick_panel(self.second_list, self.second_select)
 
 	def write_file(self):
-		path = self.find_path();
-
 		final = ''
 
 		for bp in self.chosen_array:
-			bpfile = open(path + bp + '.gitignore', 'r')
-			text = bpfile.read()
-			bpfile.close()
-
+			text = self._loadfile(os.path.join(self._bp_folder, bp + ".gitignore"))
 			final = final + '###' + bp + '###\n \n' + text + '\n\n'
 
 		view = sublime.active_window().new_file()
