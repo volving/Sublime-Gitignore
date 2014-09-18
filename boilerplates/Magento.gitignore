@@ -1,11 +1,10 @@
 .modgit/
-app/code/community/Find/
 app/code/community/Phoenix/
 app/code/community/Cm/
 app/code/core/
 app/design/adminhtml/default/default/
-app/design/adminhtml/default/find/
 app/design/frontend/base/
+app/design/frontend/rwd/
 app/design/frontend/default/blank/
 app/design/frontend/default/default/
 app/design/frontend/default/iphone/
@@ -13,7 +12,6 @@ app/design/frontend/default/modern/
 app/design/frontend/enterprise/default
 app/design/install/
 app/etc/modules/Enterprise_*
-app/etc/modules/Find_Feed.xml
 app/etc/modules/Mage_All.xml
 app/etc/modules/Mage_Api.xml
 app/etc/modules/Mage_Api2.xml
@@ -109,6 +107,7 @@ shell/log.php
 skin/adminhtml/default/default/
 skin/adminhtml/default/enterprise
 skin/frontend/base/
+skin/frontend/rwd/
 skin/frontend/default/blank/
 skin/frontend/default/blue/
 skin/frontend/default/default/
