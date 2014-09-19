@@ -9,7 +9,7 @@ class rungiboCommand(sublime_plugin.WindowCommand):
 
     _bp_list = []
     _bp_folder = 'boilerplates'
-    _package_path = ''
+    _package_path = None
 
     def _find_path(self):
         if not self._package_path:
@@ -28,7 +28,7 @@ class rungiboCommand(sublime_plugin.WindowCommand):
         if zipfile.is_zipfile(package_path):
             # Dealing with .sublime-package file
             package = zipfile.ZipFile(package_path, "r")
-            path = self._bp_folder + "/"
+            path = self._bp_folder + '/'
             return [f.replace(path, '') for f in package.namelist() if f.startswith(path)]
         else:
             return os.listdir(os.path.join(package_path, self._bp_folder))
@@ -38,7 +38,7 @@ class rungiboCommand(sublime_plugin.WindowCommand):
         if zipfile.is_zipfile(package_path):
             # Dealing with .sublime-package file
             package = zipfile.ZipFile(package_path, 'r')
-            path = self._bp_folder + "/" + bp
+            path = self._bp_folder + '/' + bp
             f = package.open(path, 'r')
             text = f.read().decode()
             f.close()
@@ -52,8 +52,8 @@ class rungiboCommand(sublime_plugin.WindowCommand):
 
     def build_list(self):
         if not self._bp_list:
-            for dir in self._listdir():
-                self._bp_list.append(dir.replace('.gitignore', ''))
+            for bp_file in self._listdir():
+                self._bp_list.append(bp_file.replace('.gitignore', ''))
 
         self.chosen_array = []
         self.first_list = self._bp_list[:]  # Copy _bp_list
